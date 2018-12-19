@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <%= if assigns[:module] do %>
+    <meta name="module" content="<%= @module %>">
+    <% end %>
+
+    <%= if assigns[:page_title] do %>
+    <title>Cook · <%= @page_title %></title>
+    <% else %>
+    <title>Cook · Your Digital Recipe Shelf</title>
+    <% end %>
+
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+  </head>
+  <body>
+  <container>
+    <div id="elm-main">
+      <%= render @view_module, @view_template, assigns %>
+    </div>
+    <script type="text/javascript" src="<%= Routes.static_url(@conn, "/js/app.js") %>"></script>
+    </container>
+  </body>
+</html>

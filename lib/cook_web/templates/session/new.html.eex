@@ -1,0 +1,17 @@
+<div class="wrapper">
+    <a class="logo" href="/"><img src="/images/logo.png"></a>
+    <h4 class="text-center">Welcome, please sign in below.</h4>
+    <form>
+        <inputgroup>
+            <label>Your Email</label>
+            <input type="email" placeholder="your@email.com">
+        </inputgroup>
+        <inputgroup>
+            <label>Your Password</label>
+            <input type="password" placeholder="********">
+        </inputgroup>
+        <button class="btn btn-primary">Sign In</button>
+        <button class="btn btn-outline">Register</button>
+    </form>
+    <h4 class="slogan">a powerful, digital recipe shelf <br> built for simplicity</h4>
+</div>

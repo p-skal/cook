@@ -1,0 +1,3 @@
+
+<div class="wrapper">  <a href="/" class="logo"><img src="/images/logo.png"></a>
+  <h1><%= gettext "Welcome to %{name}! You have reached the manifesto - no Elm.", name: "Cook" %></h1></div>

@@ -1,0 +1,24 @@
+<div class="wrapper">
+  <a href="/" class="logo"><img src="/images/logo.png"></a>
+  <p class="slogan">A powerful, digital recipe shelf<br/>built for simplicity.</p>
+
+<section>
+<h1>Stop snapping pictures of recipe books and websites.</h1>
+  <p>Grow and store your own shelf of recipes, accessible anywhere, sourced through the community and also, your own additions. </p>
+  <p><b><i>Cook</i></b> lets you search with advanced filters to refine reults based on specific diets, cuisines, other cooks, difficulties and the time taken to cook.</p>
+  <br>
+  <h3>With <i>Cook</i> you can also:</h3>
+  <ul>
+    <li>Star recipes and group them in collections for your own personal use.</li>
+    <li>Share and like others' recipes to keep them cooking themselves.</li>
+    <li>Import recipes from <b>other sites</b> with ease.</li>
+    <li><b>Time</b> your recipes as you are following them and <b>easily adjust</b> the serve & ingredients you want to use.</li>
+  </ul>
+</section>
+  <a class="btn btn-primary" href="/sign-in" style="width:100%; margin-top: 2rem;">Get Started with <%= @user_count %> other Cooks!</a>
+  <a class="btn btn-outline" href="/browse" style="width:100%;">Browse community recipes</a>
+
+  <footer>
+    <small>© 2018 - Made with ️🖤 by <a href="https://peter-s.now.sh" target="_blank"><b>Peter S.</b></a></small>
+  </footer>
+</div>

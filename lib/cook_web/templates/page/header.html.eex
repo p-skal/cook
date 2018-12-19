@@ -1,0 +1,13 @@
+<header>
+<nav class>
+<ul>
+<li><a href="/browse">Home</a></li>
+<li><a href="/account">Account</a></li>
+<li><a href="/starred">Starred</a></li>
+<li><a href="/sign-out">Sign Out</a></li>
+</ul>
+</nav>
+<a class="logo">
+    <img src="/images/icon.png">
+</a>
+</header>
