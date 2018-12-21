@@ -37,6 +37,8 @@ defmodule Cook.Accounts do
   """
   def get_user(id), do: Repo.get(User, id)
 
+  def get_by_handle(handle), do: Repo.get_by(User, handle: handle)
+
   @doc """
   Creates a user.
 

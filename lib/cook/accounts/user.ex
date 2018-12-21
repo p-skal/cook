@@ -2,15 +2,20 @@ defmodule Cook.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
   alias Cook.Accounts.User
+  alias Cook.Recipes.Recipe
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
   schema "users" do
-    field :handle, :string
-    field :email, :string
+    field :handle, :string, unique: true
+    field :email, :string, unique: true
     field :name, :string
     field :password, :string, virtual: true
     field :hash_password, :string
 
-    timestamps()
+    has_many :recipes, Recipe
+
+    timestamps(inserted_at: :created_at)
   end
 
   @doc false

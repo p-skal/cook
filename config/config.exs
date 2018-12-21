@@ -10,6 +10,8 @@ use Mix.Config
 config :cook,
   ecto_repos: [Cook.Repo]
 
+config :cook, :generators, binary_id: true
+
 # Configures the endpoint
 config :cook, CookWeb.Endpoint,
   url: [host: "localhost"],

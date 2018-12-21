@@ -6,8 +6,18 @@ defmodule Cook.AccountsTest do
   describe "users" do
     alias Cook.Accounts.User
 
-    @valid_attrs %{email: "some email", handle: "some handle", hash_password: "some hash_password", name: "some name"}
-    @update_attrs %{email: "some updated email", handle: "some updated handle", hash_password: "some updated hash_password", name: "some updated name"}
+    @valid_attrs %{
+      email: "some email",
+      handle: "some handle",
+      hash_password: "some hash_password",
+      name: "some name"
+    }
+    @update_attrs %{
+      email: "some updated email",
+      handle: "some updated handle",
+      hash_password: "some updated hash_password",
+      name: "some updated name"
+    }
     @invalid_attrs %{email: nil, handle: nil, hash_password: nil, name: nil}
 
     def user_fixture(attrs \\ %{}) do
@@ -24,9 +34,9 @@ defmodule Cook.AccountsTest do
       assert Accounts.list_users() == [user]
     end
 
-    test "get_user!/1 returns the user with given id" do
+    test "get_user!/1 returns the user with given handle" do
       user = user_fixture()
-      assert Accounts.get_user!(user.id) == user
+      assert Accounts.get_user(user.handle) == user
     end
 
     test "create_user/1 with valid data creates a user" do
@@ -53,13 +63,13 @@ defmodule Cook.AccountsTest do
     test "update_user/2 with invalid data returns error changeset" do
       user = user_fixture()
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
-      assert user == Accounts.get_user!(user.id)
+      assert user == Accounts.get_user(user.handle)
     end
 
     test "delete_user/1 deletes the user" do
       user = user_fixture()
       assert {:ok, %User{}} = Accounts.delete_user(user)
-      assert_raise Ecto.NoResultsError, fn -> Accounts.get_user!(user.id) end
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_user(user.handle) end
     end
 
     test "change_user/1 returns a user changeset" do

@@ -33,9 +33,12 @@ defmodule CookWeb.Router do
     pipe_through(:api)
 
     # TEMP
-    get("/recipes", MainController, :index)
+    get("/recipes", RecipeController, :index)
+    get("/recipes/:slug", RecipeController, :show)
 
     post("/sessions", SessionController, :create)
+    get("/users", UserController, :index)
+    get("/users/:handle", UserController, :show)
     post("/users", UserController, :create)
   end
 
@@ -44,6 +47,13 @@ defmodule CookWeb.Router do
 
     delete("/sessions", SessionController, :delete)
     post("/sessions/refresh", SessionController, :refresh)
+  end
+
+  scope "/", CookWeb do
+    pipe_through :browser
+
+    # Important: this must be the last route defined
+    get "/*path", MainController, :index
   end
 
   # Other scopes may use custom stacks.
