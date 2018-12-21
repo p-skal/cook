@@ -1,180 +1,231 @@
 module Main exposing (main)
 
-import Browser
+import Browser exposing (UrlRequest)
+import Browser.Navigation as Nav exposing (Key)
+import Helpers.View as View exposing (content, logo)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import Route exposing (Route)
-import ViewHelpers exposing (container)
-import Page.Login as Login
-import Session exposing (Session)
-import Page exposing (ActivePage)
-import Page.Home as Home
-import Page.Register as Register
+import Page.Browse as Browse
+import Page.Cooks as Cooks
+import Page.Manifest as Manifest
 import Page.NotFound as NotFound
+import Page.Recipe as Recipe
+import Page.Register as Register
+import Page.SignIn as SignIn
+import Route exposing (Route)
+import Session exposing (Session)
+import Url exposing (Url)
 
 
-type Msg
-    = SetRoute (Maybe Route)
-    | SetSession (Maybe Session)
-    | LoginMsg Login.Msg
-      --    | RegisterMsg Register.Msg
-    | LogoutCompleted (Result Http.Error ())
+
+-- FLAGS
 
 
-main =
-    Browser.sandbox
-        { init = init
-        , update = update
-        , view = view
-        }
+type alias Flags =
+    {}
 
 
-type Page
-    = Blank
-    | NotFound
-    | Home
-    | Login Login.Model
-    | Register
 
-
-type PageState
-    = Loaded Page
-    | TransitioningFrom Page
+-- MODEL
 
 
 type alias Model =
-    { session : Maybe Session
-    , pageState : PageState
+    { key : Key
+    , route : Route
+    , browseModel : Browse.Model
+    , cooksModel : Cooks.Model
+    , recipeModel : Recipe.Model
     }
 
 
-initialModel : Value -> Model
-initialModel val =
-    { session = Nothing
-    , pageState = Loaded Blank
+init : Flags -> Url -> Key -> ( Model, Cmd Msg )
+init flags url key =
+    let
+        currentRoute =
+            Route.parseUrl url
+    in
+    ( initialModel currentRoute key, Cmd.none )
+
+
+initialModel : Route -> Key -> Model
+initialModel route key =
+    { key = key
+    , route = route
+    , browseModel = Browse.initialModel
+    , cooksModel = Cooks.initialModel
+    , recipeModel = Recipe.initialModel
     }
 
 
-getPage : PageState -> Page
-getPage pageState =
-    case pageState of
-        Loaded page ->
-            page
 
-        TransitioningFrom page ->
-            page
+-- MESSAGES
 
 
-decodeSessionFromJson : Value -> Maybe Session
-decodeSessionFromJson json =
-    json
-        |> Decode.decodeValue Decode.string
-        |> Result.toMaybe
-        |> Maybe.andThen (Decode.decodeString Session.decoder >> Result.toMaybe)
+type Msg
+    = OnUrlChange Url
+    | OnUrlRequest UrlRequest
+    | BrowseMsg Browse.Msg
+    | CooksMsg Cooks.Msg
+    | RecipeMsg Recipe.Msg
 
 
-init : Value -> Location -> ( Model, Cmd Msg )
-init val location =
-    updateRoute (Route.fromLocation location) (initialModel val)
+
+-- MAIN
 
 
-updateRoute : Maybe Route -> Model -> ( Model, Cmd Msg )
-updateRoute maybeRoute model =
-    case maybeRoute of
-        Nothing ->
-            { model | pageState = Loaded NotFound } => Cmd.none
-
-        Just Route.Home ->
-            { model | pageState = Loaded Home } => Cmd.none
-
-        Just Route.Root ->
-            model => Route.modifyUrl Route.Home
-
-        Just Route.Login ->
-            { model | pageState = Loaded Login } => Cmd.none
-
-        Just Route.Logout ->
-            model => Cmd.none
-
-        Just Route.Register ->
-            { model | pageState = Loaded Register } => Cmd.none
+main : Program Flags Model Msg
+main =
+    Browser.application
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        , onUrlRequest = OnUrlRequest
+        , onUrlChange = OnUrlChange
+        }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    updatePage (getPage model.pageState) msg model
+    case msg of
+        OnUrlRequest urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model
+                    , Nav.pushUrl model.key (Url.toString url)
+                    )
+
+                Browser.External url ->
+                    ( model
+                    , Nav.load url
+                    )
+
+        OnUrlChange url ->
+            let
+                newRoute =
+                    Route.parseUrl url
+            in
+            ( { model | route = newRoute }, Cmd.none )
+
+        BrowseMsg subMsg ->
+            let
+                ( updatedBrowseModel, browseCmd ) =
+                    Browse.update subMsg model.browseModel
+            in
+            ( { model | browseModel = updatedBrowseModel }, Cmd.map BrowseMsg browseCmd )
+
+        CooksMsg subMsg ->
+            let
+                ( updatedCooksModel, cooksCmd ) =
+                    Cooks.update subMsg model.cooksModel
+            in
+            ( { model | cooksModel = updatedCooksModel }, Cmd.map CooksMsg cooksCmd )
+
+        RecipeMsg subMsg ->
+            let
+                ( updatedRecipeModel, recipeCmd ) =
+                    Recipe.update subMsg model.recipeModel
+            in
+            ( { model | recipeModel = updatedRecipeModel }, Cmd.map RecipeMsg recipeCmd )
 
 
-updatePage : Page -> Msg -> Model -> ( Model, Cmd Msg )
-updatePage page msg model =
-    case ( msg, page ) of
-        ( SetRoute route, _ ) ->
-            updateRoute route model
+
+-- VIEW
 
 
-view : Model -> Html Msg
+view : Model -> Browser.Document Msg
 view model =
-    case model.pageState of
-        Loaded page ->
-            viewPage True page
+    { title =
+        "Cook · "
+            ++ (if model.route == Route.Root then
+                    "Your Digital Recipe Shelf"
 
-        TransitioningFrom page ->
-            viewPage False page
+                else
+                    Route.routeToString model.route
+               )
+    , body = page model
+    }
 
 
-viewPage : Bool -> Page -> Html Msg
-viewPage isLoading page =
+page model =
     let
-        frame =
-            Page.frame isLoading
+        currentRoute =
+            model.route
     in
-        case page of
-            NotFound ->
-                NotFound.view
-                    |> frame Page.Other
+    let
+        viewContent =
+            case currentRoute of
+                Route.Root ->
+                    Manifest.view
 
-            Blank ->
-                Html.text "Loading Maya!"
+                Route.Browse ->
+                    [ Html.map BrowseMsg (Browse.view model.browseModel) ]
 
-            Home ->
-                Home.view
-                    |> frame Page.Home
+                Route.SignIn ->
+                    SignIn.view
 
-            Login ->
-                Login.view
-                    |> frame Page.Login
+                Route.SignOut ->
+                    NotFound.view
 
-            Register ->
-                Register.view
-                    |> frame Page.Register
+                Route.Register ->
+                    Register.view
+
+                Route.Cooks ->
+                    [ Html.map CooksMsg (Cooks.view model.cooksModel) ]
+
+                Route.NotFound ->
+                    NotFound.view
+
+                Route.Recipe slug ->
+                    [ Html.map RecipeMsg (Recipe.view model.recipeModel slug) ]
+    in
+    [ node "container"
+        []
+        [ viewHeader
+        , content [] viewContent
+        , viewFooter
+        ]
+    ]
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch
-        [ pageSubscriptions (getPage model.pageState)
-        , Sub.map SetSession sessionChangeSubscription
+    Sub.none
+
+
+navigation_links =
+    [ { route = Route.SignIn, name = "Sign In" }
+    , { route = Route.Cooks, name = "All Cooks" }
+    ]
+
+
+viewHeader =
+    header []
+        [ nav [ class "navigation" ]
+            [ ul [ class "navigation-bar" ] <|
+                [ li []
+                    [ a [ Route.href Route.Browse, class "logo" ]
+                        [ img [ logo "main" ] []
+                        ]
+                    ]
+                ]
+                    ++ List.map viewNavTab navigation_links
+            ]
         ]
 
 
-pageSubscriptions : Page -> Sub Msg
-pageSubscriptions page =
-    case page of
-        Blank ->
-            Sub.none
+viewNavTab { route, name } =
+    a [ class "nav-tab", Route.href route ] [ text name ]
 
-        NotFound ->
-            Sub.none
 
-        Error _ ->
-            Sub.none
-
-        Home ->
-            Sub.none
-
-        Login _ ->
-            Sub.none
-
-        Register _ ->
-            Sub.none
+viewFooter =
+    footer []
+        [ small []
+            [ text "© 2018 - Made with ️<3 by "
+            , a [ href "https://peter-s.now.sh", target "_blank" ]
+                [ b []
+                    [ text "Peter S." ]
+                ]
+            ]
+        ]

@@ -2,13 +2,20 @@ module Page.SignIn exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import ViewHelpers exposing (logo, no_drag, bold, inputgroup, break)
+import Route
+import Helpers.View exposing (logo, no_drag, bold, inputgroup, break)
 
 
-view : Html msg
+type alias Model =
+    { email : String
+    , password : String
+    }
+
+
+view : List (Html msg)
 view =
-    div [ class "wrapper" ]
-        [ a [ class "logo", href "/" ] [ img [ logo "main" ] [] ]
+    [ div [ class "wrapper" ]
+        [ a [ class "logo", Route.href Route.Root ] [ img [ logo "main" ] [] ]
         , h4 [ class "text-center" ] [ text "Welcome, please sign in below." ]
         , Html.form
             []
@@ -27,3 +34,4 @@ view =
             ]
         , h4 [ class "slogan" ] [ text "a powerful, digital recipe shelf ", break, text " built for simplicity" ]
         ]
+    ]

@@ -2,9 +2,9 @@ module Page.Register exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import ViewHelpers exposing (logo, no_drag, bold)
+import Helpers.View exposing (logo, no_drag, bold)
 
 
-view : Html msg
+view : List (Html msg)
 view =
-    div [ class "wrapper" ] [ text "Register" ]
+    [ div [ class "wrapper" ] [ text "Register" ] ]

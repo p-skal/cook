@@ -3,7 +3,9 @@ module Page.NotFound exposing (view)
 import Html exposing (Html, h1, div, text)
 
 
-view : Html msg
+view : List (Html msg)
 view =
-    div []
+    [ div
+        []
         [ h1 [] [ text "The page you requested was not found!" ] ]
+    ]
