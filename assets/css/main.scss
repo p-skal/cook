@@ -57,19 +57,25 @@ body {
   }
   
   header {
+      background-color: white;
     @include noSelect();
+    padding: 1rem 0;
   }
 
   footer {
     @include noSelect();
     text-align: center;
-    margin: 2rem 0;
+    padding: 2rem 0;
+  }
+
+  container {
+      display: block;
   }
   
-  container {
+  content {
     padding: 2rem;
     display: flex;
-    justify-content: center;
+    //justify-content: center;
     align-items: center;
     height: 100%;
   }
@@ -139,7 +145,7 @@ body {
     }
   }
 
-  .btn {
+  a.btn, .btn, button {
       border-radius: 2rem;
       border: none;
       font-weight: 800;
@@ -161,4 +167,47 @@ body {
     background-color: transparent;
     border: 2px solid $mainDarkColor;
     color: $mainDarkColor;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+ul.list {
+    margin: 1rem 2rem;
+}
+
+nav {
+    display: flex;
+}
+
+.navigation-bar, .user-bar {
+
+        display: flex;
+        
+        align-items: center;
+        list-style: none;
+        li {
+            display: inline-flex;
+            margin: 0;
+        }
+        .logo {
+            width: 100%;
+            filter: brightness(50%);
+            img {
+                width: 135px;
+            }
+        }
+    }
+
+.user-bar {
+    margin-left: auto;
+}
+
+.nav-tab {
+    color: $mainColor;
+    font-size: 15px;
+    font-weight: 800;
+    padding: 0.5rem 1rem;
 }

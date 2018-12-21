@@ -524,6 +524,7 @@ select {
 }
 
 header {
+  background-color: white;
   -webkit-touch-callout: none;
   /* iOS Safari */
   -webkit-user-select: none;
@@ -535,6 +536,7 @@ header {
   -ms-user-select: none;
   /* Internet Explorer/Edge */
   user-select: none;
+  padding: 1rem 0;
 }
 
 footer {
@@ -550,13 +552,16 @@ footer {
   /* Internet Explorer/Edge */
   user-select: none;
   text-align: center;
-  margin: 2rem 0;
+  padding: 2rem 0;
 }
 
 container {
+  display: block;
+}
+
+content {
   padding: 2rem;
   display: flex;
-  justify-content: center;
   align-items: center;
   height: 100%;
 }
@@ -671,7 +676,7 @@ input[type='email']::placeholder, input[type='number']::placeholder, input[type=
   color: #A36D64;
 }
 
-.btn {
+a.btn, .btn, button {
   border-radius: 2rem;
   border: none;
   font-weight: 800;
@@ -689,7 +694,7 @@ input[type='email']::placeholder, input[type='number']::placeholder, input[type=
   user-select: none;
 }
 
-.btn:focus {
+a.btn:focus, .btn:focus, button:focus {
   transform: translateY(2px);
 }
 
@@ -705,4 +710,48 @@ input[type='email']::placeholder, input[type='number']::placeholder, input[type=
   background-color: transparent;
   border: 2px solid #2d3b51;
   color: #2d3b51;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+ul.list {
+  margin: 1rem 2rem;
+}
+
+nav {
+  display: flex;
+}
+
+.navigation-bar, .user-bar {
+  display: flex;
+  align-items: center;
+  list-style: none;
+}
+
+.navigation-bar li, .user-bar li {
+  display: inline-flex;
+  margin: 0;
+}
+
+.navigation-bar .logo, .user-bar .logo {
+  width: 100%;
+  filter: brightness(50%);
+}
+
+.navigation-bar .logo img, .user-bar .logo img {
+  width: 135px;
+}
+
+.user-bar {
+  margin-left: auto;
+}
+
+.nav-tab {
+  color: #fe9574;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 0.5rem 1rem;
 }
